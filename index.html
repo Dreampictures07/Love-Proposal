@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Question...</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* --- CSS STYLES --- */
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background-color: #ffe6fa; /* Fallback */
+            background-image: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%); 
+            /* Let's do a soft blush gradient instead */
+            background: linear-gradient(to bottom right, #fff0f5, #e6e6fa);
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden; /* Prevent scrolling */
+            text-align: center;
+            color: #5a4a4a;
+        }
+
+        .container {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        /* Typography */
+        h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            color: #d46a6a;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        /* Sections */
+        .step {
+            display: none; /* Hidden by default */
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .visible {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Buttons Container */
+        .btn-container {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            height: 100px; /* Space for moving button */
+        }
+
+        /* Button Styles */
+        button {
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        #yesBtn {
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
+            color: white;
+            font-size: 1.5rem;
+            padding: 15px 40px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.05);
+        }
+
+        #noBtn {
+            background: #e0e0e0;
+            color: #777;
+            font-size: 1rem;
+            padding: 10px 20px;
+            position: absolute; /* Allows free movement */
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .success-message img {
+            max-width: 200px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 117, 140, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 117, 140, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 117, 140, 0); }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.5rem; }
+            .btn-container { flex-direction: column; gap: 15px; }
+            #noBtn { position: relative; } /* Reset for initial layout, JS will handle movement */
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        
+        <div id="intro" class="step">
+            <p>I have something important to ask you...</p>
+        </div>
+
+        <div id="question" class="step">
+            <h1>Will you marry me? 💍</h1>
+            <div class="btn-container">
+                <button id="yesBtn">YES ❤️</button>
+                <button id="noBtn">NO 🙃</button>
+            </div>
+        </div>
+
+        <div id="success" class="success-message">
+            <h1>She said YES! ❤️</h1>
+            <p>You just made me the happiest person in the world.<br>I can’t wait to spend forever with you.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // --- JAVASCRIPT LOGIC ---
+        
+        // Elements
+        const intro = document.getElementById('intro');
+        const question = document.getElementById('question');
+        const success = document.getElementById('success');
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const music = document.getElementById('bgMusic');
+
+        // Sequence: Fade In Intro -> Wait -> Fade Out Intro -> Fade In Question
+        window.onload = () => {
+            // Show intro
+            setTimeout(() => {
+                intro.classList.add('visible');
+            }, 500);
+
+            // Transition to question
+            setTimeout(() => {
+                intro.classList.remove('visible'); // Fade out
+                intro.style.display = 'none'; // Remove from flow
+                
+                question.style.display = 'block';
+                setTimeout(() => {
+                    question.classList.add('visible');
+                }, 100);
+            }, 4000); // 4 seconds reading time
+        };
+
+        // "No" Button Interaction (The Move Effect)
+        function moveButton() {
+            const container = document.querySelector('.container');
+            const containerRect = container.getBoundingClientRect();
+            
+            // Calculate random position within the window (safe area)
+            const maxWidth = window.innerWidth - noBtn.offsetWidth - 20;
+            const maxHeight = window.innerHeight - noBtn.offsetHeight - 20;
+
+            const randomX = Math.random() * maxWidth;
+            const randomY = Math.random() * maxHeight;
+
+            noBtn.style.position = 'fixed'; // Break out of flow
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        // Trigger move on hover (desktop) or touch (mobile)
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevent clicking
+            moveButton();
+        });
+
+        // "Yes" Button Interaction
+        yesBtn.addEventListener('click', () => {
+            // Play Music
+            music.volume = 0.5;
+            music.play().catch(error => console.log("Audio play failed (interaction required first)"));
+
+            // Hide Question
+            question.style.display = 'none';
+
+            // Show Success
+            success.style.display = 'flex';
+            
+            // Trigger Confetti
+            triggerConfetti();
+        });
+
+        // Confetti Effect
+        function triggerConfetti() {
+            const duration = 15 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInOut(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                const particleCount = 50 * (timeLeft / duration);
+                
+                // confetti from left and right
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInOut(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInOut(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+    </script>
+</body>
+</html>
