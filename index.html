@@ -82,7 +82,7 @@
         h2 { font-size: 1.1rem; margin-bottom: 20px; font-weight: 600; }
         label { display: block; text-align: left; margin: 12px 0 5px; font-weight: 600; font-size: 0.85rem; color: #666; }
 
-        /* Names Display on Success Screen */
+        /* Names Display */
         .names-display {
             font-family: 'Great Vibes', cursive;
             font-size: 2.5rem;
@@ -125,6 +125,36 @@
             transition: top 0.3s ease, left 0.3s ease;
         }
 
+        /* DEVELOPER BUTTON (Instagram) */
+        .dev-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 15px;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: #d44a6a;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,1);
+            animation: floatBtn 3s ease-in-out infinite;
+            transition: transform 0.2s;
+        }
+        .dev-btn:hover { transform: scale(1.05); }
+        .dev-btn span { font-size: 1.2rem; } /* Icon size */
+        
+        @keyframes floatBtn {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
         /* Success Screen Animations */
         .stickers-container { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
         .sticker { width: 90px; height: 90px; object-fit: contain; animation: bounce 2s infinite; }
@@ -150,6 +180,10 @@
         <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a73467.mp3?filename=piano-moment-11070.mp3" type="audio/mpeg">
     </audio>
 
+    <a href="https://www.instagram.com/dream_pictures.07?igsh=MW56OXh6N2tteGIzbQ==" target="_blank" class="dev-btn">
+        <span>📸</span> Dream Pictures
+    </a>
+
     <div id="app">
         
         <div id="screen-1" class="screen active glass-card">
@@ -170,21 +204,15 @@
         <div id="screen-2" class="screen glass-card">
             <h2>Customize</h2>
             <form id="detailsForm" onsubmit="event.preventDefault(); generateLink();">
-                
                 <label id="label-1">Your Name</label>
                 <input type="text" id="yourName" required>
-                
                 <label id="label-2">Partner's Name</label>
                 <input type="text" id="partnerName" required>
-
                 <label>Message after YES (Optional)</label>
                 <textarea id="customMsg" placeholder="Leave blank for a surprise romantic message..."></textarea>
-                
                 <button type="submit" class="btn-main">Create Link ✨</button>
             </form>
-            
             <div class="loader" id="loader"></div>
-            
             <div id="resultArea" style="display:none; margin-top:20px;">
                 <p style="font-size:0.9rem;">Your link is ready!</p>
                 <div class="url-box" id="urlBox"></div>
@@ -204,7 +232,6 @@
                 <div id="proposal-step" style="display:none;">
                     <h1 class="heartbeat">Will you marry me? 💍</h1>
                     <h2 id="proposal-message" style="font-size: 1.8rem; color: #d44a6a; margin-top:10px;"></h2>
-                    
                     <div style="margin-top: 50px; display:flex; flex-direction:column; align-items:center;">
                         <button class="btn-main" id="yesBtn" style="font-size: 1.5rem; padding: 20px 60px; width:auto;">YES ❤️</button>
                         <div style="height: 50px;"></div>
@@ -213,26 +240,20 @@
 
                 <div id="success-step" style="display:none;">
                     <h1 id="success-title" style="font-size: 3rem; margin-bottom: 0;">She Said YES! ❤️</h1>
-                    
                     <div id="names-display" class="names-display"></div>
-
                     <div class="stickers-container">
                         <img src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif" class="sticker">
                         <img src="https://media.tenor.com/2s_01h6s0hEAAAAi/tonton-tonton-friends.gif" class="sticker">
                     </div>
-
                     <p id="final-message" style="font-size: 1.1rem; margin-top: 20px; font-style: italic; color: #555; padding: 0 10px;"></p>
                 </div>
             </div>
-            
             <button id="noBtn" style="display:none;">NO 🙃</button>
         </div>
     </div>
 
     <script>
-        // ---------------------------------------------------------
-        // 1. FIREBASE CONFIGURATION
-        // ---------------------------------------------------------
+        // 1. FIREBASE CONFIG (PASTE YOUR KEYS HERE)
         const firebaseConfig = {
           apiKey: "AIzaSyAkHC1oWKk9u7aL60SfLvlN8wg3S79HH9w",
           authDomain: "love-proposal-1b9fd.firebaseapp.com",
@@ -246,26 +267,11 @@
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // ---------------------------------------------------------
-        // 2. RANDOM MESSAGES
-        // ---------------------------------------------------------
-        const boyMessages = [
-            "You just made me the happiest man alive.",
-            "I can't wait to grow old with you.",
-            "My queen, thank you for making my dream come true.",
-            "Forever isn't long enough with you."
-        ];
+        // 2. MESSAGES
+        const boyMessages = ["You just made me the happiest man alive.", "I can't wait to grow old with you.", "My queen, thank you for making my dream come true.", "Forever isn't long enough with you."];
+        const girlMessages = ["You are my king, and I am so lucky to be your queen.", "I promise to make you the happiest man in the world.", "I can't wait to start our adventure together. ❤️", "You are my greatest adventure."];
 
-        const girlMessages = [
-            "You are my king, and I am so lucky to be your queen.",
-            "I promise to make you the happiest man in the world.",
-            "I can't wait to start our adventure together. ❤️",
-            "You are my greatest adventure."
-        ];
-
-        // ---------------------------------------------------------
-        // 3. ANIMATIONS & MUSIC
-        // ---------------------------------------------------------
+        // 3. ANIMATIONS
         function createHearts() {
             const container = document.getElementById('heart-container');
             setInterval(() => {
@@ -281,9 +287,7 @@
         }
         createHearts();
 
-        // ---------------------------------------------------------
         // 4. APP LOGIC
-        // ---------------------------------------------------------
         let selectedTheme = 'boy';
         let generatedID = null;
         let proposalData = {};
@@ -291,7 +295,6 @@
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const proposalId = urlParams.get('id');
-
             if (proposalId) {
                 showScreen('screen-3');
                 loadProposal(proposalId);
@@ -305,7 +308,6 @@
             setTimeout(() => { document.getElementById(id).classList.add('active'); }, 100);
         }
 
-        // --- CREATOR LOGIC ---
         function selectTheme(theme) {
             selectedTheme = theme;
             const yourNameInput = document.getElementById('yourName');
@@ -324,7 +326,6 @@
                 label2.innerText = "His Name (Groom)";
                 partnerNameInput.placeholder = "e.g. Romeo";
             }
-
             document.querySelectorAll('.gender-card').forEach(c => c.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
             setTimeout(() => { showScreen('screen-2'); }, 300);
@@ -334,7 +335,6 @@
             const yourName = document.getElementById('yourName').value;
             const partnerName = document.getElementById('partnerName').value;
             const customMsg = document.getElementById('customMsg').value;
-            
             if(!yourName || !partnerName) return alert("Please fill in both names ❤️");
 
             document.getElementById('loader').style.display = 'block';
@@ -360,7 +360,6 @@
         }
         function previewProposal() { window.location.href = '?id=' + generatedID; }
 
-        // --- PROPOSAL LOGIC ---
         function loadProposal(id) {
             db.ref('proposals/' + id).once('value').then((snapshot) => {
                 if (snapshot.exists()) {
@@ -377,7 +376,6 @@
             setTimeout(() => {
                 document.getElementById('intro-step').style.display = 'none';
                 document.getElementById('proposal-step').style.display = 'block';
-                
                 const noBtn = document.getElementById('noBtn');
                 noBtn.style.display = 'block';
                 const rect = document.getElementById('yesBtn').getBoundingClientRect();
@@ -386,7 +384,6 @@
             }, 2500);
         }
 
-        // --- NO BUTTON ---
         const noBtn = document.getElementById('noBtn');
         function moveButton() {
             const maxLeft = window.innerWidth - noBtn.offsetWidth - 20; 
@@ -398,26 +395,20 @@
         noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
 
-        // --- YES BUTTON (SUCCESS) ---
         document.getElementById('yesBtn').addEventListener('click', () => {
-            // 1. Play Music
             const music = document.getElementById('bgMusic');
             music.volume = 0.5;
             music.play().catch(e => console.log("Audio requires interaction first"));
 
-            // 2. Switch Screens
             document.getElementById('noBtn').style.display = 'none';
             document.getElementById('proposal-step').style.display = 'none';
             document.getElementById('success-step').style.display = 'block';
             
-            // 3. Set Text & Names
             const title = document.getElementById('success-title');
             title.innerText = proposalData.theme === 'girl' ? "He Said YES! ❤️" : "She Said YES! ❤️";
 
-            // Show Names (New Feature)
             document.getElementById('names-display').innerText = `${proposalData.proposer} & ${proposalData.partner}`;
 
-            // Set Message
             const msgBox = document.getElementById('final-message');
             if (proposalData.customMessage && proposalData.customMessage.trim() !== "") {
                 msgBox.innerText = `"${proposalData.customMessage}"`;
@@ -425,7 +416,6 @@
                 const list = proposalData.theme === 'boy' ? boyMessages : girlMessages;
                 msgBox.innerText = list[Math.floor(Math.random() * list.length)];
             }
-            
             triggerConfetti();
         });
 
@@ -443,4 +433,3 @@
     </script>
 </body>
 </html>
-
