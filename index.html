@@ -23,7 +23,7 @@
             margin: 0;
             padding: 0;
             height: 100vh;
-            height: 100dvh; /* Mobile fix */
+            height: 100dvh;
             background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
             font-family: 'Montserrat', sans-serif;
             overflow: hidden;
@@ -71,10 +71,9 @@
             z-index: 10;
             transition: all 0.3s ease;
             max-height: 90vh;
-            overflow-y: auto; /* Allow scroll if content is long */
+            overflow-y: auto;
         }
 
-        /* Screens */
         .screen { display: none; opacity: 0; transition: opacity 0.5s ease; }
         .screen.active { display: block; opacity: 1; }
 
@@ -82,6 +81,15 @@
         h1 { font-family: 'Great Vibes', cursive; font-size: 2.8rem; color: #d44a6a; margin: 0 0 10px; line-height: 1.2; }
         h2 { font-size: 1.1rem; margin-bottom: 20px; font-weight: 600; }
         label { display: block; text-align: left; margin: 12px 0 5px; font-weight: 600; font-size: 0.85rem; color: #666; }
+
+        /* Names Display on Success Screen */
+        .names-display {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.5rem;
+            color: #ff758c;
+            margin: 10px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
 
         /* Inputs */
         input, textarea {
@@ -118,19 +126,10 @@
         }
 
         /* Success Screen Animations */
-        .stickers-container {
-            display: flex; justify-content: center; gap: 10px; margin-top: 20px;
-        }
-        .sticker {
-            width: 100px; height: 100px; object-fit: contain;
-            animation: bounce 2s infinite;
-        }
+        .stickers-container { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
+        .sticker { width: 90px; height: 90px; object-fit: contain; animation: bounce 2s infinite; }
         .sticker:nth-child(2) { animation-delay: 0.5s; }
-        
-        @keyframes bounce { 
-            0%, 100% { transform: translateY(0); } 
-            50% { transform: translateY(-10px); } 
-        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
         .heartbeat { animation: heartbeat 1.5s infinite; }
         @keyframes heartbeat { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
@@ -146,6 +145,10 @@
 
     <div class="bg-animate"></div>
     <div class="heart-container" id="heart-container"></div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a73467.mp3?filename=piano-moment-11070.mp3" type="audio/mpeg">
+    </audio>
 
     <div id="app">
         
@@ -204,12 +207,15 @@
                     
                     <div style="margin-top: 50px; display:flex; flex-direction:column; align-items:center;">
                         <button class="btn-main" id="yesBtn" style="font-size: 1.5rem; padding: 20px 60px; width:auto;">YES ❤️</button>
-                        <div style="height: 50px;"></div> </div>
+                        <div style="height: 50px;"></div>
+                    </div>
                 </div>
 
                 <div id="success-step" style="display:none;">
-                    <h1 style="font-size: 3rem; margin-bottom: 0;">She Said YES! ❤️</h1>
+                    <h1 id="success-title" style="font-size: 3rem; margin-bottom: 0;">She Said YES! ❤️</h1>
                     
+                    <div id="names-display" class="names-display"></div>
+
                     <div class="stickers-container">
                         <img src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif" class="sticker">
                         <img src="https://media.tenor.com/2s_01h6s0hEAAAAi/tonton-tonton-friends.gif" class="sticker">
@@ -225,40 +231,40 @@
 
     <script>
         // ---------------------------------------------------------
-        // 1. FIREBASE CONFIGURATION (REPLACE THIS!)
+        // 1. FIREBASE CONFIGURATION
         // ---------------------------------------------------------
         const firebaseConfig = {
-          apiKey: "AIzaSyAkHC1oWKk9u7aL60SfLvlN8wg3S79HH9w",
-          authDomain: "love-proposal-1b9fd.firebaseapp.com",
-          projectId: "love-proposal-1b9fd",
-          storageBucket: "love-proposal-1b9fd.firebasestorage.app",
-          messagingSenderId: "905642735237",
-          appId: "1:905642735237:web:a940786037f25cb61d9bec",
-          measurementId: "G-RTXYF2RWWY"
+            apiKey: "AIzaSyD-YOUR-API-KEY-HERE",
+            authDomain: "your-project.firebaseapp.com",
+            databaseURL: "https://your-project-default-rtdb.firebaseio.com",
+            projectId: "your-project",
+            storageBucket: "your-project.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcde12345"
         };
         
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
         // ---------------------------------------------------------
-        // 2. RANDOM MESSAGES LIBRARY
+        // 2. RANDOM MESSAGES
         // ---------------------------------------------------------
         const boyMessages = [
-            "You just made me the happiest man alive. I promise to love you forever.",
-            "I can't wait to grow old with you. You are my everything.",
-            "Finally! I get to annoy you for the rest of my life. Love you! ❤️",
-            "My queen, thank you for making my dream come true."
+            "You just made me the happiest man alive.",
+            "I can't wait to grow old with you.",
+            "My queen, thank you for making my dream come true.",
+            "Forever isn't long enough with you."
         ];
 
         const girlMessages = [
             "You are my king, and I am so lucky to be your queen.",
             "I promise to make you the happiest man in the world.",
-            "Yes! A thousand times Yes! I love you so much.",
-            "I can't wait to start our adventure together. ❤️"
+            "I can't wait to start our adventure together. ❤️",
+            "You are my greatest adventure."
         ];
 
         // ---------------------------------------------------------
-        // 3. ANIMATIONS
+        // 3. ANIMATIONS & MUSIC
         // ---------------------------------------------------------
         function createHearts() {
             const container = document.getElementById('heart-container');
@@ -282,7 +288,6 @@
         let generatedID = null;
         let proposalData = {};
 
-        // Route Handler
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const proposalId = urlParams.get('id');
@@ -300,7 +305,7 @@
             setTimeout(() => { document.getElementById(id).classList.add('active'); }, 100);
         }
 
-        // --- STEP 1: Select Theme ---
+        // --- CREATOR LOGIC ---
         function selectTheme(theme) {
             selectedTheme = theme;
             const yourNameInput = document.getElementById('yourName');
@@ -325,7 +330,6 @@
             setTimeout(() => { showScreen('screen-2'); }, 300);
         }
 
-        // --- STEP 2: Generate Link ---
         function generateLink() {
             const yourName = document.getElementById('yourName').value;
             const partnerName = document.getElementById('partnerName').value;
@@ -340,7 +344,7 @@
                 proposer: yourName,
                 partner: partnerName,
                 theme: selectedTheme,
-                customMessage: customMsg, // Saving custom message
+                customMessage: customMsg,
                 timestamp: Date.now()
             }).then(() => {
                 document.getElementById('loader').style.display = 'none';
@@ -356,7 +360,7 @@
         }
         function previewProposal() { window.location.href = '?id=' + generatedID; }
 
-        // --- STEP 3: The Proposal ---
+        // --- PROPOSAL LOGIC ---
         function loadProposal(id) {
             db.ref('proposals/' + id).once('value').then((snapshot) => {
                 if (snapshot.exists()) {
@@ -382,7 +386,7 @@
             }, 2500);
         }
 
-        // --- NO BUTTON LOGIC ---
+        // --- NO BUTTON ---
         const noBtn = document.getElementById('noBtn');
         function moveButton() {
             const maxLeft = window.innerWidth - noBtn.offsetWidth - 20; 
@@ -394,22 +398,30 @@
         noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
 
-        // --- YES BUTTON LOGIC (With Custom Message) ---
+        // --- YES BUTTON (SUCCESS) ---
         document.getElementById('yesBtn').addEventListener('click', () => {
+            // 1. Play Music
+            const music = document.getElementById('bgMusic');
+            music.volume = 0.5;
+            music.play().catch(e => console.log("Audio requires interaction first"));
+
+            // 2. Switch Screens
             document.getElementById('noBtn').style.display = 'none';
             document.getElementById('proposal-step').style.display = 'none';
             document.getElementById('success-step').style.display = 'block';
             
-            // 1. Set Title
-            const title = document.querySelector('#success-step h1');
-            title.innerText = proposalData.theme === 'girl' ? "He said YES! ❤️" : "She said YES! ❤️";
+            // 3. Set Text & Names
+            const title = document.getElementById('success-title');
+            title.innerText = proposalData.theme === 'girl' ? "He Said YES! ❤️" : "She Said YES! ❤️";
 
-            // 2. Set Message (Custom or Random)
+            // Show Names (New Feature)
+            document.getElementById('names-display').innerText = `${proposalData.proposer} & ${proposalData.partner}`;
+
+            // Set Message
             const msgBox = document.getElementById('final-message');
             if (proposalData.customMessage && proposalData.customMessage.trim() !== "") {
                 msgBox.innerText = `"${proposalData.customMessage}"`;
             } else {
-                // Random fallback
                 const list = proposalData.theme === 'boy' ? boyMessages : girlMessages;
                 msgBox.innerText = list[Math.floor(Math.random() * list.length)];
             }
