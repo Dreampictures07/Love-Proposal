@@ -14,7 +14,7 @@
         :root {
             --primary: #ff758c;
             --secondary: #ff7eb3;
-            --glass: rgba(255, 255, 255, 0.85);
+            --glass: rgba(255, 255, 255, 0.9);
             --glass-border: rgba(255, 255, 255, 0.6);
             --text: #5a4a4a;
         }
@@ -23,7 +23,7 @@
             margin: 0;
             padding: 0;
             height: 100vh;
-            height: 100dvh; /* Mobile viewport fix */
+            height: 100dvh; /* Mobile fix */
             background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
             font-family: 'Montserrat', sans-serif;
             overflow: hidden;
@@ -34,7 +34,7 @@
             position: relative;
         }
 
-        /* Animated Background Gradient */
+        /* Animated Background */
         .bg-animate {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -50,27 +50,12 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Falling Hearts Animation */
-        .heart-container {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            overflow: hidden;
-            pointer-events: none;
-            z-index: -1;
-        }
-        .falling-heart {
-            position: absolute;
-            top: -10%;
-            color: rgba(255, 255, 255, 0.6);
-            animation: fall linear forwards;
-            font-size: 20px;
-        }
-        @keyframes fall {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
-        }
+        /* Falling Hearts */
+        .heart-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; z-index: -1; }
+        .falling-heart { position: absolute; top: -10%; color: rgba(255, 255, 255, 0.6); animation: fall linear forwards; font-size: 20px; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
 
-        /* Glassmorphism Card */
+        /* Glass Card */
         .glass-card {
             background: var(--glass);
             backdrop-filter: blur(12px);
@@ -85,71 +70,75 @@
             position: relative;
             z-index: 10;
             transition: all 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto; /* Allow scroll if content is long */
         }
 
-        /* Screen Management */
+        /* Screens */
         .screen { display: none; opacity: 0; transition: opacity 0.5s ease; }
         .screen.active { display: block; opacity: 1; }
 
         /* Typography */
-        h1 { font-family: 'Great Vibes', cursive; font-size: 2.8rem; color: #d44a6a; margin: 0 0 15px; line-height: 1.2; }
-        h2 { font-size: 1.2rem; margin-bottom: 25px; font-weight: 600; }
-        p { font-size: 1rem; margin-bottom: 20px; }
-        label { display: block; text-align: left; margin: 15px 0 5px; font-weight: 600; font-size: 0.85rem; color: #666; padding-left: 5px; }
+        h1 { font-family: 'Great Vibes', cursive; font-size: 2.8rem; color: #d44a6a; margin: 0 0 10px; line-height: 1.2; }
+        h2 { font-size: 1.1rem; margin-bottom: 20px; font-weight: 600; }
+        label { display: block; text-align: left; margin: 12px 0 5px; font-weight: 600; font-size: 0.85rem; color: #666; }
 
         /* Inputs */
-        input {
-            width: 100%; padding: 14px; border-radius: 12px;
+        input, textarea {
+            width: 100%; padding: 12px; border-radius: 12px;
             border: 2px solid transparent; background: rgba(255, 255, 255, 0.6);
             font-family: inherit; font-size: 1rem; box-sizing: border-box;
             transition: 0.3s;
         }
-        input:focus { outline: none; background: white; border-color: var(--primary); box-shadow: 0 0 10px rgba(255, 117, 140, 0.2); }
+        input:focus, textarea:focus { outline: none; background: white; border-color: var(--primary); }
+        textarea { resize: none; height: 80px; }
 
-        /* Gender Selection */
-        .gender-options { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
+        /* Gender Select */
+        .gender-options { display: flex; gap: 15px; justify-content: center; margin-top: 15px; }
         .gender-card {
-            background: rgba(255,255,255,0.5); padding: 15px; border-radius: 15px;
-            cursor: pointer; width: 100px; transition: all 0.2s;
-            border: 2px solid transparent;
+            background: rgba(255,255,255,0.5); padding: 10px 15px; border-radius: 15px;
+            cursor: pointer; width: 90px; transition: all 0.2s; border: 2px solid transparent;
         }
-        .gender-card:active { transform: scale(0.95); }
-        .gender-card.selected { background: white; border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .gender-icon { font-size: 2.5rem; display: block; margin-bottom: 5px; }
+        .gender-card.selected { background: white; border-color: var(--primary); transform: translateY(-5px); }
+        .gender-icon { font-size: 2rem; display: block; }
 
         /* Buttons */
         .btn-main {
             background: linear-gradient(to right, #ff758c, #ff7eb3);
-            color: white; border: none; padding: 16px; border-radius: 50px;
+            color: white; border: none; padding: 15px; border-radius: 50px;
             font-size: 1.1rem; font-weight: 700; cursor: pointer; width: 100%;
-            margin-top: 25px; box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
-            transition: transform 0.2s;
+            margin-top: 20px; box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
         }
-        .btn-main:active { transform: scale(0.98); }
+        
+        /* Tricky No Button */
+        #noBtn {
+            position: fixed; z-index: 100; background: #e0e0e0; color: #777;
+            padding: 10px 25px; border-radius: 50px; border: none; font-weight: 600;
+            transition: top 0.3s ease, left 0.3s ease;
+        }
 
-        /* PROPOSAL SCREEN SPECIFIC */
+        /* Success Screen Animations */
+        .stickers-container {
+            display: flex; justify-content: center; gap: 10px; margin-top: 20px;
+        }
+        .sticker {
+            width: 100px; height: 100px; object-fit: contain;
+            animation: bounce 2s infinite;
+        }
+        .sticker:nth-child(2) { animation-delay: 0.5s; }
+        
+        @keyframes bounce { 
+            0%, 100% { transform: translateY(0); } 
+            50% { transform: translateY(-10px); } 
+        }
+
         .heartbeat { animation: heartbeat 1.5s infinite; }
         @keyframes heartbeat { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        /* The Tricky No Button */
-        #noBtn {
-            position: fixed; /* Fixed relative to viewport */
-            z-index: 100;
-            background: #e0e0e0; color: #777;
-            padding: 10px 25px; border-radius: 50px; border: none;
-            font-weight: 600; cursor: pointer;
-            transition: top 0.3s ease, left 0.3s ease; /* Smooth glide */
-        }
-
-        /* Success Message */
-        .success-content img { width: 100%; max-width: 200px; border-radius: 15px; margin-top: 20px; }
-
-        /* Loader */
+        /* Loader & URL */
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; margin: 10px auto; display: none; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* URL Box */
-        .url-box { background: rgba(255,255,255,0.5); padding: 10px; border-radius: 8px; word-break: break-all; font-size: 0.85rem; margin: 15px 0; border: 1px dashed #aaa; user-select: all; }
+        .url-box { background: rgba(255,255,255,0.5); padding: 10px; border-radius: 8px; word-break: break-all; font-size: 0.85rem; margin: 15px 0; border: 1px dashed #aaa; }
 
     </style>
 </head>
@@ -162,21 +151,21 @@
         
         <div id="screen-1" class="screen active glass-card">
             <h1>Proposal Maker</h1>
-            <p>First, tell us who you are?</p>
+            <p>I am a...</p>
             <div class="gender-options">
                 <div class="gender-card" onclick="selectTheme('boy')">
                     <span class="gender-icon">🤵</span>
-                    <span>I am a Boy</span>
+                    <span>Boy</span>
                 </div>
                 <div class="gender-card" onclick="selectTheme('girl')">
                     <span class="gender-icon">👰</span>
-                    <span>I am a Girl</span>
+                    <span>Girl</span>
                 </div>
             </div>
         </div>
 
         <div id="screen-2" class="screen glass-card">
-            <h2>Just a few details...</h2>
+            <h2>Customize</h2>
             <form id="detailsForm" onsubmit="event.preventDefault(); generateLink();">
                 
                 <label id="label-1">Your Name</label>
@@ -184,6 +173,9 @@
                 
                 <label id="label-2">Partner's Name</label>
                 <input type="text" id="partnerName" required>
+
+                <label>Message after YES (Optional)</label>
+                <textarea id="customMsg" placeholder="Leave blank for a surprise romantic message..."></textarea>
                 
                 <button type="submit" class="btn-main">Create Link ✨</button>
             </form>
@@ -191,7 +183,7 @@
             <div class="loader" id="loader"></div>
             
             <div id="resultArea" style="display:none; margin-top:20px;">
-                <p style="font-size:0.9rem;">Copy this link and send it to them!</p>
+                <p style="font-size:0.9rem;">Your link is ready!</p>
                 <div class="url-box" id="urlBox"></div>
                 <button class="btn-main" onclick="copyLink()" style="margin-top:10px; padding:12px;">Copy Link 📋</button>
                 <button class="btn-main" onclick="previewProposal()" style="background:transparent; border:2px solid #fff; color:#5a4a4a; margin-top:10px; padding:12px; box-shadow:none;">Preview 👀</button>
@@ -199,7 +191,7 @@
         </div>
 
         <div id="screen-3" class="screen">
-            <div class="glass-card" style="background:rgba(255,255,255,0.25); border:none; box-shadow:none;">
+            <div class="glass-card" style="background:rgba(255,255,255,0.85); border:none;">
                 
                 <div id="intro-step">
                     <p style="font-size: 1.5rem; font-weight:300;">I have something to ask...</p>
@@ -210,16 +202,20 @@
                     <h1 class="heartbeat">Will you marry me? 💍</h1>
                     <h2 id="proposal-message" style="font-size: 1.8rem; color: #d44a6a; margin-top:10px;"></h2>
                     
-                    <div style="margin-top: 50px; display:flex; flex-direction:column; align-items:center; gap:20px;">
-                        <button class="btn-main" id="yesBtn" style="font-size: 1.5rem; padding: 20px 60px; width:auto; margin:0;">YES ❤️</button>
-                        
-                        <div style="height: 50px; width: 100px;"></div>
-                    </div>
+                    <div style="margin-top: 50px; display:flex; flex-direction:column; align-items:center;">
+                        <button class="btn-main" id="yesBtn" style="font-size: 1.5rem; padding: 20px 60px; width:auto;">YES ❤️</button>
+                        <div style="height: 50px;"></div> </div>
                 </div>
 
-                <div id="success-step" class="success-content" style="display:none;">
-                    <h1 style="font-size: 3.5rem;">She Said YES! ❤️</h1>
-                    <p id="success-text" style="font-size: 1.2rem;">Best day ever.</p>
+                <div id="success-step" style="display:none;">
+                    <h1 style="font-size: 3rem; margin-bottom: 0;">She Said YES! ❤️</h1>
+                    
+                    <div class="stickers-container">
+                        <img src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif" class="sticker">
+                        <img src="https://media.tenor.com/2s_01h6s0hEAAAAi/tonton-tonton-friends.gif" class="sticker">
+                    </div>
+
+                    <p id="final-message" style="font-size: 1.1rem; margin-top: 20px; font-style: italic; color: #555; padding: 0 10px;"></p>
                 </div>
             </div>
             
@@ -241,43 +237,52 @@
           measurementId: "G-RTXYF2RWWY"
         };
         
-        // Initialize Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
         // ---------------------------------------------------------
-        // 2. ANIMATIONS (Falling Hearts)
+        // 2. RANDOM MESSAGES LIBRARY
+        // ---------------------------------------------------------
+        const boyMessages = [
+            "You just made me the happiest man alive. I promise to love you forever.",
+            "I can't wait to grow old with you. You are my everything.",
+            "Finally! I get to annoy you for the rest of my life. Love you! ❤️",
+            "My queen, thank you for making my dream come true."
+        ];
+
+        const girlMessages = [
+            "You are my king, and I am so lucky to be your queen.",
+            "I promise to make you the happiest man in the world.",
+            "Yes! A thousand times Yes! I love you so much.",
+            "I can't wait to start our adventure together. ❤️"
+        ];
+
+        // ---------------------------------------------------------
+        // 3. ANIMATIONS
         // ---------------------------------------------------------
         function createHearts() {
             const container = document.getElementById('heart-container');
-            
             setInterval(() => {
                 const heart = document.createElement('div');
                 heart.classList.add('falling-heart');
                 heart.innerHTML = Math.random() > 0.5 ? '❤️' : '💖';
-                
-                // Randomize
                 heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.animationDuration = Math.random() * 3 + 4 + 's'; // 4s to 7s
-                heart.style.fontSize = Math.random() * 10 + 15 + 'px'; // 15px to 25px
-                
+                heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+                heart.style.fontSize = Math.random() * 10 + 15 + 'px';
                 container.appendChild(heart);
-
                 setTimeout(() => { heart.remove(); }, 8000);
-            }, 300); // New heart every 300ms
+            }, 300);
         }
-        createHearts(); // Start immediately
+        createHearts();
 
         // ---------------------------------------------------------
-        // 3. APP LOGIC
+        // 4. APP LOGIC
         // ---------------------------------------------------------
         let selectedTheme = 'boy';
         let generatedID = null;
         let proposalData = {};
 
-        // Check URL for ID
+        // Route Handler
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const proposalId = urlParams.get('id');
@@ -292,36 +297,31 @@
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            setTimeout(() => {
-                document.getElementById(id).classList.add('active');
-            }, 100);
+            setTimeout(() => { document.getElementById(id).classList.add('active'); }, 100);
         }
 
-        // --- STEP 1: Select Identity ---
+        // --- STEP 1: Select Theme ---
         function selectTheme(theme) {
             selectedTheme = theme;
-            
-            // Update Placeholders based on selection
             const yourNameInput = document.getElementById('yourName');
             const partnerNameInput = document.getElementById('partnerName');
             const label1 = document.getElementById('label-1');
             const label2 = document.getElementById('label-2');
 
             if (theme === 'boy') {
-                label1.innerText = "Your Name (The Groom 🤵)";
+                label1.innerText = "Your Name (Groom)";
                 yourNameInput.placeholder = "e.g. Romeo";
-                label2.innerText = "Her Name (The Bride 👰)";
+                label2.innerText = "Her Name (Bride)";
                 partnerNameInput.placeholder = "e.g. Juliet";
             } else {
-                label1.innerText = "Your Name (The Bride 👰)";
+                label1.innerText = "Your Name (Bride)";
                 yourNameInput.placeholder = "e.g. Juliet";
-                label2.innerText = "His Name (The Groom 🤵)";
+                label2.innerText = "His Name (Groom)";
                 partnerNameInput.placeholder = "e.g. Romeo";
             }
 
             document.querySelectorAll('.gender-card').forEach(c => c.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
-
             setTimeout(() => { showScreen('screen-2'); }, 300);
         }
 
@@ -329,37 +329,30 @@
         function generateLink() {
             const yourName = document.getElementById('yourName').value;
             const partnerName = document.getElementById('partnerName').value;
+            const customMsg = document.getElementById('customMsg').value;
             
             if(!yourName || !partnerName) return alert("Please fill in both names ❤️");
 
             document.getElementById('loader').style.display = 'block';
-            
-            // Create ID
             generatedID = Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 
             db.ref('proposals/' + generatedID).set({
                 proposer: yourName,
                 partner: partnerName,
                 theme: selectedTheme,
+                customMessage: customMsg, // Saving custom message
                 timestamp: Date.now()
             }).then(() => {
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('resultArea').style.display = 'block';
-                document.getElementById('detailsForm').style.display = 'none'; // Hide form
-                document.getElementById('screen-2').querySelector('h2').innerText = "Link Created! 🎉";
-
-                const fullUrl = window.location.origin + window.location.pathname + '?id=' + generatedID;
-                document.getElementById('urlBox').innerText = fullUrl;
-            }).catch(e => {
-                alert("Error: " + e.message);
-                document.getElementById('loader').style.display = 'none';
+                document.getElementById('detailsForm').style.display = 'none';
+                document.querySelector('#screen-2 h2').innerText = "Link Created! 🎉";
+                document.getElementById('urlBox').innerText = window.location.origin + window.location.pathname + '?id=' + generatedID;
             });
         }
 
         function copyLink() {
-            navigator.clipboard.writeText(document.getElementById('urlBox').innerText).then(() => {
-                alert("Link copied! Send it to your love. 💌");
-            });
+            navigator.clipboard.writeText(document.getElementById('urlBox').innerText).then(() => alert("Link copied! 💌"));
         }
         function previewProposal() { window.location.href = '?id=' + generatedID; }
 
@@ -370,74 +363,56 @@
                     proposalData = snapshot.val();
                     startProposalFlow();
                 } else {
-                    document.getElementById('screen-3').innerHTML = "<div class='glass-card'><h1>Proposal not found 😕</h1><a href='index.html' class='btn-main'>Create Yours</a></div>";
+                    document.getElementById('screen-3').innerHTML = "<div class='glass-card'><h1>Error 😕</h1><a href='index.html' class='btn-main'>Create Yours</a></div>";
                 }
             });
         }
 
         function startProposalFlow() {
-            // Personalize
             document.getElementById('proposal-message').innerText = "for " + proposalData.partner;
-            
-            // Wait then show
             setTimeout(() => {
                 document.getElementById('intro-step').style.display = 'none';
                 document.getElementById('proposal-step').style.display = 'block';
                 
-                // Show buttons
                 const noBtn = document.getElementById('noBtn');
                 noBtn.style.display = 'block';
-                // Initialize No Button position near bottom center
                 const rect = document.getElementById('yesBtn').getBoundingClientRect();
                 noBtn.style.left = (window.innerWidth / 2 - 40) + 'px';
                 noBtn.style.top = (rect.bottom + 20) + 'px';
-
             }, 2500);
         }
 
-        // --- NO BUTTON LOGIC (FIXED FOR MOBILE) ---
+        // --- NO BUTTON LOGIC ---
         const noBtn = document.getElementById('noBtn');
-        
         function moveButton() {
-            // Get viewport dimensions
-            const winWidth = window.innerWidth;
-            const winHeight = window.innerHeight;
-            const btnWidth = noBtn.offsetWidth;
-            const btnHeight = noBtn.offsetHeight;
-
-            // Calculate Safe Boundaries (keep 20px padding from edges)
-            // Math.max(0, ...) ensures we don't get negative numbers
-            const maxLeft = winWidth - btnWidth - 20; 
-            const maxTop = winHeight - btnHeight - 20;
-
-            const newLeft = Math.max(20, Math.random() * maxLeft);
-            const newTop = Math.max(20, Math.random() * maxTop);
-
-            noBtn.style.position = 'fixed'; // Ensure it stays in view
-            noBtn.style.left = newLeft + 'px';
-            noBtn.style.top = newTop + 'px';
+            const maxLeft = window.innerWidth - noBtn.offsetWidth - 20; 
+            const maxTop = window.innerHeight - noBtn.offsetHeight - 20;
+            noBtn.style.position = 'fixed'; 
+            noBtn.style.left = Math.max(20, Math.random() * maxLeft) + 'px';
+            noBtn.style.top = Math.max(20, Math.random() * maxTop) + 'px';
         }
-
-        // Use touchstart for mobile (better than hover)
         noBtn.addEventListener('mouseover', moveButton);
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Stop scrolling/clicking
-            moveButton();
-        });
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
 
-        // --- YES BUTTON LOGIC ---
+        // --- YES BUTTON LOGIC (With Custom Message) ---
         document.getElementById('yesBtn').addEventListener('click', () => {
-            document.getElementById('noBtn').style.display = 'none'; // Hide No button
+            document.getElementById('noBtn').style.display = 'none';
             document.getElementById('proposal-step').style.display = 'none';
             document.getElementById('success-step').style.display = 'block';
             
-            // Dynamic Success Message
-            if(proposalData.theme === 'girl') {
-                document.querySelector('#success-step h1').innerText = "He said YES! ❤️";
-            }
+            // 1. Set Title
+            const title = document.querySelector('#success-step h1');
+            title.innerText = proposalData.theme === 'girl' ? "He said YES! ❤️" : "She said YES! ❤️";
 
-            document.getElementById('success-text').innerText = 
-                `${proposalData.proposer} ❤️ ${proposalData.partner}`;
+            // 2. Set Message (Custom or Random)
+            const msgBox = document.getElementById('final-message');
+            if (proposalData.customMessage && proposalData.customMessage.trim() !== "") {
+                msgBox.innerText = `"${proposalData.customMessage}"`;
+            } else {
+                // Random fallback
+                const list = proposalData.theme === 'boy' ? boyMessages : girlMessages;
+                msgBox.innerText = list[Math.floor(Math.random() * list.length)];
+            }
             
             triggerConfetti();
         });
@@ -446,7 +421,6 @@
             const duration = 15 * 1000;
             const animationEnd = Date.now() + duration;
             const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
             const interval = setInterval(function() {
                 const timeLeft = animationEnd - Date.now();
                 if (timeLeft <= 0) return clearInterval(interval);
@@ -454,7 +428,6 @@
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
             }, 250);
         }
-
     </script>
 </body>
 </html>
